@@ -1,9 +1,7 @@
 import torch
 import networkx as nx
 from torch_geometric.utils import from_networkx
-from torch_geometric.data import Data, Batch
-
-
+from torch_geometric.data import Data,Batch
 ####################################################################
 # These functions reflect the methods described in Section 3.1 and 3.2
 # of the SAG-ViT paper, where high-fidelity feature patches are extracted
@@ -163,19 +161,19 @@ def build_graph_data_from_patches(G_global_batch, patches):
     for batch_idx, G_global in enumerate(G_global_batch):
         # 提取节点特征
         node_features = patches[batch_idx].view(num_patches, -1)
+
         batch = torch.ones(node_features.size(0), dtype=torch.long) * batch_idx  # 所有节点来自一张图
         # 提取边索引和边属性
         edge_index = torch.tensor(list(G_global.edges)).t().contiguous()
         edge_attr = torch.tensor(
             [G_global[u][v]['weight'] for u, v in G_global.edges],
             dtype=torch.float
-        ).reshape(-1, 1)
+        ).reshape(-1,1) #实验（1,2,3）未修改
 
-        data = Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr, batch=batch)
+        data = Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr,batch=batch)
         data_list.append(data)
 
     return data_list
-
 
 def build_graph_from_img(img):
     G_global_batch, patches = build_graph_from_patches(img)
@@ -184,18 +182,14 @@ def build_graph_from_img(img):
 
     return data
 
-
 if __name__ == '__main__':
+
     x = torch.rand(2, 108, 400, 12)
-    # # (h/4 * w/4), c* (4*4)
-    # # patches = extract_patches(x)
-    # # print(patches.shape)
-    # # G_global_batch, patches = build_graph_from_patches(x)
-    # # data = build_graph_data_from_patches(G_global_batch, patches)
-    # # print(data)
+    # (h/4 * w/4), c* (4*4)
+    # patches = extract_patches(x)
+    # print(patches.shape)
+    # G_global_batch, patches = build_graph_from_patches(x)
+    # data = build_graph_data_from_patches(G_global_batch, patches)
+    # print(data)
     data = build_graph_from_img(x)
     print(data)
-
-    # x = torch.rand(2, 3, 160, 96)
-    # y = extract_patches(x)
-    # print(y.shape)

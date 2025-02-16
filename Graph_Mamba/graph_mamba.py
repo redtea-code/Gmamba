@@ -27,12 +27,10 @@ from torch_geometric.nn.resolver import (
 )
 from torch_geometric.typing import Adj
 from torch_geometric.utils import to_dense_batch
-
+from cross_atten.mamba import Mamba, MambaConfig
 # from mamba_ssm import Mamba
 
 from torch_geometric.utils import degree, sort_edge_index
-
-from cross_atten.mamba import MambaConfig, Mamba
 
 
 def permute_within_batch(x, batch):
@@ -90,14 +88,14 @@ class GPSConv(torch.nn.Module):
                 self.order_by_degree == False), f'order_by_degree={self.order_by_degree} and shuffle_ind={self.shuffle_ind}'
 
         if self.att_type == 'mamba':
-            config = MambaConfig(d_model=channels, n_layers=1, use_cuda=True)
-            self.self_attn = Mamba(config)
             # self.self_attn = Mamba(
             #     d_model=channels,
             #     d_state=d_state,
             #     d_conv=d_conv,
             #     expand=1
             # )
+            config = MambaConfig(d_model=channels, n_layers=2, use_cuda=True)
+            self.self_attn = Mamba(config)
 
         self.mlp = Sequential(
             Linear(channels, channels * 2),
@@ -204,7 +202,6 @@ class GPSConv(torch.nn.Module):
         return (f'{self.__class__.__name__}({self.channels}, '
                 f'conv={self.conv}, heads={self.heads})')
 
-
 class Graphblock(torch.nn.Module):
     def __init__(self, channels: int, num_layers: int, model_type: str, shuffle_ind: int, d_state: int,
                  d_conv: int, order_by_degree: False, if_pool=False):
@@ -250,9 +247,10 @@ class Graphblock(torch.nn.Module):
             x = global_add_pool(x, batch)
         return x
 
+
 class GraphModel(torch.nn.Module):
     def __init__(self, channels: int, pe_dim: int, num_layers: int, model_type: str, shuffle_ind: int, d_state: int,
-                 d_conv: int, order_by_degree: False, node_dim: int=48, edge_dim: int=1,if_pool=False):
+                 d_conv: int, order_by_degree: False, node_dim: int = 48, edge_dim: int = 1, if_pool=False,drop=0.2):
         super().__init__()
 
         self.node_emb = Linear(node_dim, channels - pe_dim)
@@ -275,20 +273,21 @@ class GraphModel(torch.nn.Module):
             if self.model_type == 'gine':
                 conv = GINEConv(nn)
 
-            if self.model_type == 'mamba':
+            elif self.model_type == 'mamba':
                 # 输入先经过第二个参数(GINEConv(nn))再进入mamba
                 conv = GPSConv(channels, GINEConv(nn), heads=4, attn_dropout=0.5,
                                att_type='mamba',
                                shuffle_ind=self.shuffle_ind,
                                order_by_degree=self.order_by_degree,
                                d_state=d_state, d_conv=d_conv)
-            if self.model_type == "only_mamba":
+            elif self.model_type == "only_mamba":
                 conv = GPSConv(channels, None, heads=4, attn_dropout=0.5,
                                att_type='mamba',
                                shuffle_ind=self.shuffle_ind,
                                order_by_degree=self.order_by_degree,
                                d_state=d_state, d_conv=d_conv)
             self.convs.append(conv)
+        self.drop = Dropout(drop)
 
     def forward(self, x, pe, edge_index, edge_attr, batch):
         x_pe = self.pe_norm(pe)
@@ -298,8 +297,10 @@ class GraphModel(torch.nn.Module):
         for conv in self.convs:
             if self.model_type == 'gine':
                 x = conv(x, edge_index, edge_attr=edge_attr)
+                x = self.drop(x)
             else:
                 x = conv(x, edge_index, batch, edge_attr=edge_attr)
+                x = self.drop(x)
         if self.if_pool:
             x = global_add_pool(x, batch)
         return x
@@ -309,8 +310,8 @@ if __name__ == '__main__':
     from torch_geometric.data import Data
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = GraphModel(channels=64, pe_dim=8, num_layers=10,
-                       model_type='gine',
+    model = GraphModel(channels=64, pe_dim=8, num_layers=4,
+                       model_type='mamba',
                        shuffle_ind=0, order_by_degree=True,
                        d_conv=4, d_state=16,
                        ).to(device)
