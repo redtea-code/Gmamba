@@ -654,7 +654,7 @@ def save_result(args,dataset=False):
                                        cf['img_sz'],
                                        cf['eval_bc'],
                                        cf['table_path'],
-                                       True,
+                                       False,
                                        days_threshold=cf['days_threshold'],use_OASIS=dataset)
     ref_model = Residual_mid_UNet3D_vit(1, 1, is_segmentation=False, f_maps=(64, 128, 256))
     ref_model.load_state_dict(torch.load('weights/model.pt'))
