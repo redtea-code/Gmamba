@@ -687,7 +687,6 @@ def save_result(args,dataset=False):
         ft_model.load_state_dict(torch.load(j(cf['pth_dir'],'model_current', 'ft_model_current.pth')))
         # model.load_state_dict(torch.load(j(cf['pth_dir'], 'model_current.pth')))
 
-    loss_fn = nn.BCELoss()
     ft_model = ft_model.to(device)
     
     log_dir = j(cf['pth_dir'], 'result.txt')
@@ -699,7 +698,6 @@ def save_result(args,dataset=False):
         all_predictions = []
         all_targets = []
         correct = 0
-        losses = 0
         total = 0
         for i, batch in tqdm(enumerate(val_dataloader), total=len(val_dataloader)):
             x, x_cat, x_num, y = batch['image'], batch['cate_x'], batch['conti_x'], batch['label'].float()
@@ -708,14 +706,10 @@ def save_result(args,dataset=False):
                 mid_input, mid_output, PET = ref_model(x, output_vit_mid=True)
                 pred = val_ft_model(x_cat, x_num, [x, PET])
             pred = F.sigmoid(pred)
-            loss = loss_fn(pred.squeeze(1), y)
-            pred_labels = pred.round()
-            total += y.size(0)
-            correct += (pred_labels.squeeze(1) == y).sum().item()
-            losses += loss.item()
+
             all_predictions.append(y)
-            all_targets.append(pred_labels.squeeze(1))
-        lines = [f"{int(l1)},{int(l2)}\n" for l1, l2 in zip(all_predictions, all_targets)]
+            all_targets.append(pred.squeeze(1))
+        lines = [f"{int(l1)},{float(l2):.4f}\n" for l1, l2 in zip(all_predictions, all_targets)]
         file.writelines(lines)
         file.flush()
     
