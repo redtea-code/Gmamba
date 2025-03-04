@@ -1,0 +1,37 @@
+# base configuration
+train_path: 'E:/ADNI_Dataset/train'
+eval_path: 'E:/ADNI_Dataset/test'
+table_path: 'C:/Users/cyh/Downloads/AD_proj/GMamba/GEF-Mamba_ADNI_Dataset/train_data/ct_2&5_3year.csv'
+train_bc: 1
+eval_bc: 1
+img_sz: [160, 160, 96]
+num_epochs: 10
+days_threshold: -1
+
+# train process configuration
+val_inter: 1
+save_inter: 5
+
+resume_path: 'pytorch3dunet/pretrained/r3d101_KM_200ep.pth'
+
+# accelerate config
+lr: 6e-5
+split_batches: False
+mixed_precision: 'fp16'
+log_with: 'tensorboard'
+project_dir: 'weights/classifier'
+gradient_accumulation_steps: 1
+
+# classifier config
+latent_dim: 16
+f_maps: [64, 128, 256]
+seq_length: 4
+
+# ft_trans config
+dim: 512
+dim_out: 1
+depth: 4
+heads: 8
+attn_dropout: 0.1
+ff_dropout: 0.1
+
