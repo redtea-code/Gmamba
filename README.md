@@ -32,6 +32,7 @@ Through the tabel file, our dataset can be reproduced and We will provide a link
 
 # How to Train
 1.Set the location of the dataset in the Config file
+
 2.Prepare your dataset, which should include MRI and table datasets
 ```
 |--Train
