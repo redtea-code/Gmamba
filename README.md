@@ -1,7 +1,7 @@
 # AFF-GMamba
 This code is the pytorch implementation of the AFF-GMamba.
 Through the tabel file, our dataset can be reproduced and We will provide a link to our weight file in the near future.
-[](./assets/architecture.png)
+![pic](./assets/architecture.png)
 
 ## Metrics of AD prediction on SOTA models 
 | Dataset |        Method        |    ACC    |    REC    |    PRE    |    AUC    |    F1     |
@@ -42,4 +42,5 @@ Through the tabel file, our dataset can be reproduced and We will provide a link
 |----Subject2_id-PTID-label.nii.gz
 ```
 3.Download the pre-trained  [3D GAN-Vit](https://drive.google.com/drive/folders/1TMPE6JLMW87uMGIzYsbEZsgxmTArnlYE?usp=share_link) and [Mamba Classifier](https://drive.google.com/drive/folders/1AXTFHRLqQe1VKwscngRCjmuA-rxfETtB?usp=drive_link) parameters
+
 4.specify the location of parameter file and use python test_mamba.py
