@@ -1,4 +1,3 @@
-from datetime import datetime
 import yaml
 import inspect
 from shutil import copyfile, copy
@@ -8,12 +7,15 @@ import torch
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
+import pandas as pd
 import sys
+
 
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters())
 
-def save_plot_data(epoch:int, predictions:torch.Tensor, targets:torch.Tensor, parrent_dir:str):
+
+def save_plot_data(epoch: int, predictions: torch.Tensor, targets: torch.Tensor, parrent_dir: str):
     '''
     predictions = torch.cat(all_predictions)
     targets = torch.cat(all_targets)
@@ -25,32 +27,39 @@ def save_plot_data(epoch:int, predictions:torch.Tensor, targets:torch.Tensor, pa
     }
     torch.save(save_data, f'{parrent_dir}/epoch_{epoch}_data.pth')
 
-def date_difference(date1, date2):
-    # 将日期字符串转换为datetime对象
-    date_format1 = '%Y-%m-%d'
-    date_format2 = '%Y-%m-%d'
 
+def date_difference(date1, date2, format1='%Y-%m-%d', format2='%Y-%m-%d'):
+    # 将日期字符串转换为datetime对象
+    date_format1 = format1
+    date_format2 = format2
+
+    if isinstance(date1, pd.Series) or isinstance(date2, pd.Series):
+        d1 = pd.to_datetime(date1, format=date_format1)
+        d2 = pd.to_datetime(date2, format=date_format2)
+        diff = (d1 - d2).abs().dt.days
+        return diff
     datetime_object1 = datetime.strptime(date1, date_format1)
     datetime_object2 = datetime.strptime(date2, date_format2)
-
     # 计算两个日期之间的差异
     difference = abs(datetime_object2 - datetime_object1)
 
     # 返回差异的天数
     return difference.days
 
+
 def see_mri_pet(tensor_3d, normalize=True):
     # new_size = (tensor_3d.shape[2]//2, tensor_3d.shape[3], tensor_3d.shape[4])
     # resizer = transforms.Resize(new_size)
     # tensor_3d = resizer(tensor_3d)
-    tensor_3d = tensor_3d[0,0,...] # take away the channel and batch dim
+    tensor_3d = tensor_3d[0, 0, ...]  # take away the channel and batch dim
     tensor_3d = tensor_3d.permute(2, 0, 1)
     pic = make_grid(tensor_3d.unsqueeze(1))
     if normalize:
-        pic = (pic+1)/2
+        pic = (pic + 1) / 2
     else:
         pic = pic
     return pic
+
 
 def plt_mri_pet(data, save_path):
     # print("The shape of data: ", data.shape)
@@ -79,7 +88,8 @@ def plt_mri_pet(data, save_path):
         col_idx = i % 10
         fig.delaxes(axes[row_idx, col_idx])
 
-    plt.savefig(save_path)  
+    plt.savefig(save_path)
+
 
 def copy_yaml_to_folder(yaml_file, folder):
     """
@@ -96,6 +106,7 @@ def copy_yaml_to_folder(yaml_file, folder):
     # 将 YAML 文件复制到目标文件夹中
     copy(yaml_file, os.path.join(folder, file_name))
 
+
 def copy_yaml_to_folder_auto(yaml_file, folder):
     """
     将一个 YAML 文件复制到一个文件夹中
@@ -107,7 +118,7 @@ def copy_yaml_to_folder_auto(yaml_file, folder):
     dt_object = datetime.fromtimestamp(timestamp)
     formatted_time = dt_object.strftime("%m%d%H%M%S")
 
-    #获取运行程序名
+    # 获取运行程序名
     program_name_with_ext = os.path.basename(sys.argv[0])
     program_name, ext = os.path.splitext(program_name_with_ext)
 
@@ -123,6 +134,7 @@ def copy_yaml_to_folder_auto(yaml_file, folder):
 
     return dir
 
+
 # 加载配置文件
 def load_config(file_path):
     # 打开文件
@@ -136,7 +148,8 @@ def load_config(file_path):
                 config[key] = tuple(config[key])
         # 返回配置文件
         return config
-    
+
+
 def get_parameters(fn, original_dict):
     new_dict = dict()
     arg_names = inspect.getfullargspec(fn)[0]
@@ -145,6 +158,6 @@ def get_parameters(fn, original_dict):
             new_dict[k] = original_dict[k]
     return new_dict
 
+
 def write_config(config_path, save_path):
     copyfile(config_path, save_path)
-    
