@@ -1,0 +1,61 @@
+{
+  "dataset": "nacc",
+  "model": "resnet",
+  "model_source": {
+    "name": "3D ResNet-18",
+    "url": "https://github.com/kenshohara/3D-ResNets-PyTorch",
+    "commit": "reference architecture; local implementation in pytorch3dunet/threedresnet.py"
+  },
+  "reference_run": "runs/channel_graph_nacc_20260902_alignment/learned_cnn_independent_encoder_retry2",
+  "mri_to_pet_checkpoint": null,
+  "mri_to_pet_cache_dir": null,
+  "data_root": "/zjs/AD_Project/NACC/NACC_base",
+  "table_path": "/zjs/AD_Project/NACC/3year2_general.csv",
+  "native_mri_policy": "direct_cropped_norm_read_no_runtime_transform",
+  "image_conditions": [
+    "cropped_norm_mri",
+    "generated_pet"
+  ],
+  "clinical_features": "one_hot_categorical_plus_train_table_zscore_numeric",
+  "spatial_graph": null,
+  "seed": 2026,
+  "epochs": 100,
+  "early_stopping_patience": 15,
+  "model_selection_metric": "validation_auc_with_balanced_accuracy_fallback",
+  "num_threads": 4,
+  "batch_size": 2,
+  "lr": 6e-05,
+  "weight_decay": 0.0,
+  "amp": true,
+  "device": "cuda",
+  "splits": {
+    "train": 174,
+    "val": 45,
+    "test": 57
+  },
+  "clinical_dim": 4,
+  "clinical_columns": [
+    "CDRSUM",
+    "NACCGDS",
+    "SEX",
+    "AGE"
+  ],
+  "excluded_columns": [
+    "NACCMMSE"
+  ],
+  "focal_loss": {
+    "enabled": true,
+    "alpha": 0.75,
+    "gamma": 3.0
+  },
+  "normalization": {
+    "fit_scope": "train_table_rows_only",
+    "special_codes_treated_as_missing": [
+      -4,
+      88,
+      97,
+      98,
+      99
+    ]
+  }
+}
