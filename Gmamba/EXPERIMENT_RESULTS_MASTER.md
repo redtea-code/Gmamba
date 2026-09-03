@@ -107,6 +107,19 @@
 | `nacc_resnet_focal_seed2026/alpha075_gamma30` | nacc | ResNet + focal | 0.75 | 3.0 | 0.8673 | 0.7745 | 0.8596 | 0.7574 | 0.7574 | 0.5149 | 10 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha075_gamma30/metrics.json` |
 | `nacc_resnet_focal_seed2026/alpha085_gamma40` | nacc | ResNet + focal | 0.85 | 4.0 | 0.8704 | 0.7043 | 0.8070 | 0.6468 | 0.6526 | 0.3063 | 9 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha085_gamma40/metrics.json` |
 
+### NACC 基线 + C 组 Focal Loss（移除 NACCMMSE）
+
+> seed=2026；固定 subject-level split；六个非 ResNet 基线串行运行于 GPU 0。统一使用 Focal Loss `alpha=0.75, gamma=3.0`，最佳 epoch 按 validation AUC 选择，test 仅评估一次。
+
+| 运行 | 数据集 | 模型/损失 | alpha | gamma | Val AUC | Test AUC | ACC | BACC | F1 | MCC | Test pred+ | N | 结果文件 |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `nacc_baseline_focal_seed2026_serial/cnn` | nacc | cnn + focal | 0.75 | 3.0 | 0.8827 | 0.7213 | 0.7895 | 0.6755 | 0.6621 | 0.3275 | 12 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/cnn/metrics.json` |
+| `nacc_baseline_focal_seed2026_serial/gcn` | nacc | gcn + focal | 0.75 | 3.0 | 0.8673 | 0.6681 | 0.8421 | 0.7074 | 0.7158 | 0.4328 | 9 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/gcn/metrics.json` |
+| `nacc_baseline_focal_seed2026_serial/sgcn` | nacc | sgcn + focal | 0.75 | 3.0 | 0.8426 | 0.6191 | 0.8421 | 0.7074 | 0.7158 | 0.4328 | 9 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/sgcn/metrics.json` |
+| `nacc_baseline_focal_seed2026_serial/ibgnn` | nacc | ibgnn + focal | 0.75 | 3.0 | 0.8241 | 0.6596 | 0.8246 | 0.6968 | 0.6968 | 0.3936 | 10 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/ibgnn/metrics.json` |
+| `nacc_baseline_focal_seed2026_serial/mad_former` | nacc | mad_former + focal | 0.75 | 3.0 | 0.8549 | 0.8234 | 0.8772 | 0.6500 | 0.6961 | 0.5110 | 3 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/mad_former/metrics.json` |
+| `nacc_baseline_focal_seed2026_serial/itcfn` | nacc | itcfn + focal | 0.75 | 3.0 | 0.8395 | 0.7957 | 0.8421 | 0.6681 | 0.6889 | 0.3896 | 7 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/itcfn/metrics.json` |
+
 ### NACC / 外部泛化
 
 | 运行 | 数据集 | 模型/特征模式 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
