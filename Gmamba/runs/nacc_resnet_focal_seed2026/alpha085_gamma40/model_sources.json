@@ -1,0 +1,42 @@
+{
+  "gcn": {
+    "name": "vanilla GCN adapted to native spatial nodes",
+    "url": "https://github.com/Houliang-Zhou/SGCN/blob/main/kernel/gcn.py",
+    "commit": "56c510e26035ea2b44f9190b339d46335a21a15e"
+  },
+  "resnet": {
+    "name": "3D ResNet-18",
+    "url": "https://github.com/kenshohara/3D-ResNets-PyTorch",
+    "commit": "reference architecture; local implementation in pytorch3dunet/threedresnet.py"
+  },
+  "resnet50": {
+    "name": "3D ResNet-50",
+    "url": "https://github.com/kenshohara/3D-ResNets-PyTorch",
+    "commit": "reference bottleneck architecture; local 3D implementation"
+  },
+  "ibgnn": {
+    "name": "IBGNN message-passing baseline adapted to spatial nodes",
+    "url": "https://github.com/HennyJie/IBGNN",
+    "commit": "b50a072538b454fb2850ab75d843027c6873eaa8"
+  },
+  "sgcn": {
+    "name": "sparse interpretable GCN adapted to spatial nodes",
+    "url": "https://github.com/Houliang-Zhou/SGCN",
+    "commit": "56c510e26035ea2b44f9190b339d46335a21a15e"
+  },
+  "cnn": {
+    "name": "dual-branch 3D CNN",
+    "url": "https://github.com/Project-MONAI/tutorials",
+    "commit": "standard 3D convolutional baseline"
+  },
+  "mad_former": {
+    "name": "MAD-Former multi-patch attention adaptation",
+    "url": "https://github.com/yjy-97/MAD-Former",
+    "commit": "4691821046371a8c0f0ff7d7c649cf8cdf6e110d"
+  },
+  "itcfn": {
+    "name": "ITCFN tri-modal co-attention adaptation",
+    "url": "https://github.com/justinhxy/ITFC",
+    "commit": "839444fe7af1409277f0b182c5a6021db79bf7dc"
+  }
+}

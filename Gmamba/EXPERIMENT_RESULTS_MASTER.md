@@ -98,13 +98,14 @@
 
 ### NACC ResNet + Focal Loss（移除 NACCMMSE）
 
-> seed=2026；固定 subject-level split：train/val/test=174/45/57（test 为 47 negative / 10 positive）。输入为 MRI + generated PET + `CDRSUM`、`NACCGDS`、`SEX`、`AGE`；`NACCMMSE` 已排除。三组只改变 focal loss 参数；最佳 epoch 按 validation AUC 选择，test 仅评估一次。
+> seed=2026；固定 subject-level split：train/val/test=174/45/57（test 为 47 negative / 10 positive）。输入为 MRI + generated PET + `CDRSUM`、`NACCGDS`、`SEX`、`AGE`；`NACCMMSE` 已排除。四组只改变 focal loss 参数；最佳 epoch 按 validation AUC 选择，test 仅评估一次。
 
 | 运行 | 数据集 | 模型/损失 | alpha | gamma | Val AUC | Test AUC | ACC | BACC | F1 | MCC | Test pred+ | N | 结果文件 |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
 | `nacc_resnet_focal_seed2026/alpha050_gamma10` | nacc | ResNet + focal | 0.50 | 1.0 | 0.8873 | 0.7426 | 0.8070 | 0.5287 | 0.5225 | 0.0978 | 3 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha050_gamma10/metrics.json` |
 | `nacc_resnet_focal_seed2026/alpha065_gamma20` | nacc | ResNet + focal | 0.65 | 2.0 | 0.8735 | 0.6617 | 0.7544 | 0.6543 | 0.6306 | 0.2726 | 14 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha065_gamma20/metrics.json` |
 | `nacc_resnet_focal_seed2026/alpha075_gamma30` | nacc | ResNet + focal | 0.75 | 3.0 | 0.8673 | 0.7745 | 0.8596 | 0.7574 | 0.7574 | 0.5149 | 10 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha075_gamma30/metrics.json` |
+| `nacc_resnet_focal_seed2026/alpha085_gamma40` | nacc | ResNet + focal | 0.85 | 4.0 | 0.8704 | 0.7043 | 0.8070 | 0.6468 | 0.6526 | 0.3063 | 9 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha085_gamma40/metrics.json` |
 
 ### NACC / 外部泛化
 

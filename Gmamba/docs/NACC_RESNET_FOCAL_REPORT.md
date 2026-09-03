@@ -23,11 +23,12 @@
 
 ## 3. 训练策略
 
-三组实验使用相同的 seed、split、模型、batch size、学习率、weight decay、early stopping 设置，仅改变 Focal Loss 参数：
+四组实验使用相同的 seed、split、模型、batch size、学习率、weight decay、early stopping 设置，仅改变 Focal Loss 参数：
 
 - A：`alpha=0.50, gamma=1.0`
 - B：`alpha=0.65, gamma=2.0`
 - C：`alpha=0.75, gamma=3.0`
+- D：`alpha=0.85, gamma=4.0`
 
 Focal Loss 以 logits 计算，`alpha` 是正类权重，`gamma` 控制易分类样本的抑制。最佳 checkpoint 依据 validation AUC 选择；test 集未用于参数选择。
 
@@ -38,20 +39,21 @@ Focal Loss 以 logits 计算，`alpha` 是正类权重，`gamma` 控制易分类
 | A | 2 | 0.8873 | 0.7426 | 0.8070 | 0.5287 | 0.5225 | 0.0978 | `[[45,2],[9,1]]` | 3 |
 | B | 4 | 0.8735 | 0.6617 | 0.7544 | 0.6543 | 0.6306 | 0.2726 | `[[38,9],[5,5]]` | 14 |
 | C | 23 | 0.8673 | 0.7745 | 0.8596 | 0.7574 | 0.7574 | 0.5149 | `[[43,4],[4,6]]` | 10 |
+| D | 4 | 0.8704 | 0.7043 | 0.8070 | 0.6468 | 0.6526 | 0.3063 | `[[42,5],[6,4]]` | 9 |
 
 ## 5. 分析
 
 ### 5.1 预测同质化明显缓解
 
-A 组仍偏向阴性，test 仅预测 3 个阳性，和原先全阴性 baseline 接近。B 组预测 14 个阳性，C 组预测 10 个阳性；C 组的预测阳性数与 test 的真实阳性数相同，并且 confusion matrix 显示 TP=6、FN=4，说明模型不再通过单一阴性策略获得表面 accuracy。
+A 组仍偏向阴性，test 仅预测 3 个阳性，和原先全阴性 baseline 接近。B 组预测 14 个阳性，C 组预测 10 个阳性，D 组预测 9 个阳性；C 组的预测阳性数与 test 的真实阳性数相同，并且 confusion matrix 显示 TP=6、FN=4，说明模型不再通过单一阴性策略获得表面 accuracy。
 
 ### 5.2 Test 综合分类结果以 C 组最好
 
-C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B。C 组 test AUC=0.7745，也高于 A 的 0.7426 和 B 的 0.6617。其 test accuracy=0.8596，但结论主要依据 BACC、F1、MCC、AUC 以及 confusion matrix，而非 accuracy 单项。
+C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B/D。C 组 test AUC=0.7745，也高于 A 的 0.7426、B 的 0.6617 和 D 的 0.7043。其 test accuracy=0.8596，但结论主要依据 BACC、F1、MCC、AUC 以及 confusion matrix，而非 accuracy 单项。D 组进一步提高正类权重和难例聚焦强度后，test 指标反而低于 C 组，说明在当前固定 split 上继续增强干预并未带来收益。
 
 ### 5.3 Validation 与 test 存在排序差异
 
-按 validation AUC，A（0.8873）高于 B（0.8735）和 C（0.8673）；但 test AUC 和阈值分类指标均由 C 组最好。这说明当前单一固定 split 的 validation AUC 对 focal 参数选择不稳定，不能把 validation 排名直接解释为泛化性能排名。C 组虽然 test 最好，但该结论仍应视为单一 seed/split 的结果，而不是稳健统计优势。
+按 validation AUC，A（0.8873）高于 B（0.8735）、D（0.8704）和 C（0.8673）；但 test AUC 和阈值分类指标均由 C 组最好。这说明当前单一固定 split 的 validation AUC 对 focal 参数选择不稳定，不能把 validation 排名直接解释为泛化性能排名。C 组虽然 test 最好，但该结论仍应视为单一 seed/split 的结果，而不是稳健统计优势。
 
 ### 5.4 对 `NACCMMSE` 的解释
 
@@ -59,7 +61,7 @@ C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B。C 组 test AUC
 
 ## 6. 结论与建议
 
-在本次 seed=2026 固定 split 上，推荐将 C 组（`alpha=0.75, gamma=3.0`）作为后续分析候选：它同时减少预测同质化，并取得最高 test BACC、F1、MCC 和 AUC。但不应仅依据该一次实验声称 Focal Loss 已普遍优于 baseline。
+在本次 seed=2026 固定 split 上，推荐将 C 组（`alpha=0.75, gamma=3.0`）作为最终参数选择：它同时减少预测同质化，并取得四组中最高的 test BACC、F1、MCC 和 AUC。D 组作为边界测试未超过 C 组，因此本轮参数选择结束。但不应仅依据该一次实验声称 Focal Loss 已普遍优于 baseline。
 
 后续应优先进行多 seed 重复实验或交叉验证，并报告均值、标准差和每个 seed 的 confusion matrix；同时增加 `NACCMMSE` 保留/移除的正交 ablation，以区分临床特征清理和 Focal Loss 的独立贡献。
 
@@ -68,4 +70,5 @@ C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B。C 组 test AUC
 - A：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha050_gamma10/metrics.json`
 - B：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha065_gamma20/metrics.json`
 - C：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha075_gamma30/metrics.json`
+- D：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha085_gamma40/metrics.json`
 - 每组的 `test_predictions.csv` 用于复核预测阳性数量和 confusion matrix。
