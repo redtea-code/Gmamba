@@ -698,9 +698,14 @@ def evaluate(model: nn.Module, loader: DataLoader, device: torch.device, amp: bo
     return metrics
 
 
-def load_records(dataset: str, reference_run: Path, category_sizes: tuple[int, ...]) -> tuple[list[dict[str, Any]], dict[str, list[int]], dict[str, Any]]:
+def load_records(
+    dataset: str, reference_run: Path, category_sizes: tuple[int, ...], generated_pet_root: Path | None = None
+) -> tuple[list[dict[str, Any]], dict[str, list[int]], dict[str, Any]]:
     default = DEFAULTS[dataset]
-    records, metadata = discover_records(dataset, Path(default["data_root"]), Path(default["table_path"]))
+    records, metadata = discover_records(
+        dataset, Path(default["data_root"]), Path(default["table_path"]),
+        generated_pet_root=Path(generated_pet_root) if generated_pet_root else None,
+    )
     manifest = pd.read_csv(reference_run / "manifest.csv")
     run_config = json.loads((reference_run / "run_config.json").read_text())
     record_by_name = {record["name"]: record for record in records}
@@ -753,7 +758,9 @@ def train_one(args: argparse.Namespace) -> None:
         Path(default["table_path"]),
     )
     category_sizes = tuple(discovery_metadata["category_sizes"])
-    records, splits, loaded_metadata = load_records(dataset, reference_run, category_sizes)
+    records, splits, loaded_metadata = load_records(
+        dataset, reference_run, category_sizes, generated_pet_root=args.generated_pet_root
+    )
     if not all(
         (Path(record["generated_pet_path"]).is_file() if record.get("generated_pet_path") else Path(record["pet_cache_path"]).is_file())
         for record in records
@@ -787,7 +794,7 @@ def train_one(args: argparse.Namespace) -> None:
         "model_source": MODEL_SOURCES[model_name],
         "reference_run": reference_run,
         "mri_to_pet_checkpoint": loaded_metadata["run_config"]["reference_mri_to_pet_checkpoint"],
-        "mri_to_pet_cache_dir": loaded_metadata["run_config"]["mri_to_pet_cache_dir"],
+        "mri_to_pet_cache_dir": loaded_metadata["run_config"].get("mri_to_pet_cache_dir"),
         "data_root": default["data_root"],
         "table_path": default["table_path"],
         "native_mri_policy": "direct_cropped_norm_read_no_runtime_transform",
@@ -900,6 +907,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dataset", choices=sorted(DEFAULTS), required=True)
     parser.add_argument("--model", choices=sorted(MODEL_SOURCES), required=True)
     parser.add_argument("--reference-run")
+    parser.add_argument("--generated-pet-root")
     parser.add_argument("--output-dir")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, default=2026)

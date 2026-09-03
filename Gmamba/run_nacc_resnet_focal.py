@@ -9,7 +9,13 @@ from run_baseline_comparison import build_parser as _build_baseline_parser, trai
 
 def build_parser() -> argparse.ArgumentParser:
     parser = _build_baseline_parser()
-    parser.set_defaults(dataset="nacc", model="resnet", device="cuda")
+    parser.set_defaults(
+        dataset="nacc",
+        model="resnet",
+        device="cuda",
+        reference_run="runs/channel_graph_nacc_20260902_alignment/learned_cnn_independent_encoder_retry2",
+        generated_pet_root="/zjs/AD_Project/NACC/gen",
+    )
     # Keep the dedicated entry point constrained to the approved experiment.
     for action in parser._actions:
         if action.dest in {"dataset", "model"}:
