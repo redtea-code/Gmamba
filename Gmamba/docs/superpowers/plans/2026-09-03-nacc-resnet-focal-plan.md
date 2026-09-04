@@ -162,7 +162,7 @@ Compare only validation AUC first, then validation BACC/F1/MCC as diagnostics. S
 
 **Files:**
 - Modify: `Gmamba/EXPERIMENT_RESULTS_MASTER.md`
-- Create: `Gmamba/docs/NACC_RESNET_FOCAL_REPORT.md`
+- Create: `Gmamba/docs/1_NACC_RESNET_FOCAL_REPORT.md`
 
 - [ ] **Step 1: Add three results to a dedicated focal-loss section**
 
