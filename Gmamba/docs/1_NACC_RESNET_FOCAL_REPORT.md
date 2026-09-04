@@ -231,31 +231,116 @@ ADNI 和 NACC 各运行 shared/independent encoder 两种配置；统一使用 C
 
 本实验只改变 Learned CNN 的卷积核大小，保留 stride、padding、网络层数、输出通道和其余训练条件；但结果仍来自单一 seed/split，不能据此确认 `7×7` 在总体上优于 `3×3`。
 
-## 9. 分析
+## 9. 补充数据流地图：八个 Channel-node 运行变体
 
-### 9.1 预测同质化明显缓解
+本副地图的重点是说明数据如何流经模型；结果仅作为简略旁注。纳入的运行包括：
+
+- 原始 3×3 Learned CNN：ADNI/NACC × shared/independent，共 4 个运行；
+- 7×7 Learned CNN：ADNI/NACC × shared/independent，共 4 个运行。
+
+7×7 实验只替换 MRI/PET 降采样器中的卷积核，不改变下采样倍率、目标空间尺寸、channel-node 数量、graph 结构、临床融合层或分类头。
+
+### 9.1 总体数据流
+
+```mermaid
+flowchart LR
+    A[MRI<br/>B×1×160×196×160] --> M[1×1×1 adapter<br/>B×8×160×196×160]
+    P[generated PET<br/>B×1×160×196×160] --> PA[1×1×1 adapter<br/>B×8×160×196×160]
+    Z1[z_rec<br/>B×64×40×49×40] --> Z1A[1×1×1 adapter<br/>B×8×40×49×40]
+    Z2[z_gen_mri<br/>B×64×40×49×40] --> Z2A[1×1×1 adapter<br/>B×8×40×49×40]
+    Z3[z_gen_pet<br/>B×64×40×49×40] --> Z3A[1×1×1 adapter<br/>B×8×40×49×40]
+
+    M --> D{MRI/PET downsampling}
+    PA --> D
+    D -->|3×3,s=2,p=1<br/>or 7×7,s=2,p=3| S[B×8×40×49×40]
+    Z1A --> U[五路统一空间尺寸]
+    Z2A --> U
+    Z3A --> U
+    S --> U
+
+    U --> E{Encoder branch}
+    E -->|shared| ES[同一个 Lightweight3DResNet]
+    E -->|independent| EI[五个独立 Lightweight3DResNet]
+    ES --> F[每路 B×64×3×4×3<br/>→ pool B×64×2×2×2<br/>→ projection B×64×128]
+    EI --> F
+    F --> N[5路拼接<br/>B×320×128]
+    N --> G[Top-k learned graph<br/>adjacency 320×320<br/>nodes B×320×128]
+    G --> GP[mean over nodes<br/>B×128]
+    C[Clinical B×5] --> CP[clinical projection<br/>B×128]
+    GP --> H[concat B×256]
+    CP --> H
+    H --> O[classifier<br/>B×256→B×128→B×1]
+    O --> L[logits B<br/>Focal Loss<br/>α=0.75, γ=3.0]
+```
+
+### 9.2 八个变体的分支关系
+
+```text
+共同输入和前处理
+  MRI/PET:  [B,1,160,196,160] → adapter → [B,8,160,196,160]
+  latent:   [B,64,40,49,40]  → adapter → [B,8,40,49,40]
+                         │
+          ┌──────────────┴──────────────┐
+          │                             │
+   原始 3×3 Learned CNN           7×7 Learned CNN
+   两层 3×3,s=2,p=1               两层 7×7,s=2,p=3
+   [B,8,160,196,160]              [B,8,160,196,160]
+          ↓                             ↓
+   [B,8,40,49,40]                 [B,8,40,49,40]
+          │                             │
+    ┌─────┴─────┐                 ┌─────┴─────┐
+    │           │                 │           │
+  shared   independent          shared   independent
+    │           │                 │           │
+ ADNI/NACC  ADNI/NACC          ADNI/NACC  ADNI/NACC
+
+每个分支随后都执行：
+[B,8,40,49,40] → [B,64,3,4,3] → [B,64,2,2,2]
+→ [B,64,128]；五路 → [B,320,128]
+→ graph → [B,128]；clinical → [B,128]
+→ fusion [B,256] → logits [B,1]
+```
+
+### 9.3 各阶段的维度不变点
+
+- 7×7 与 3×3 的差异只存在于 MRI/PET 的降采样阶段；两者均执行两次 stride=2，因此 `(160,196,160)` 最终都变为 `(40,49,40)`。
+- shared 与 independent 的差异只存在于 encoder 参数组织：前者复用一个 encoder，后者为五路 source 分别维护 encoder；每路输出维度相同。
+- 五路 source 始终是 `mri、pet_gen、z_rec、z_gen_mri、z_gen_pet`，所以 node 数始终为 `5×64=320`。
+- graph 的输入输出均为 `[B,320,128]`；临床分支为 `[B,5]→[B,128]`；最终融合为 `[B,256]→[B,1]`。
+- Focal Loss 只接收最终 logits `[B]` 和标签 `[B]`，不参与任何空间、通道或 node 维度变换。
+
+### 9.4 结果旁注
+
+- 原始 3×3 Learned CNN 的 C 组重测：NACC shared Test AUC=`0.7404`，NACC independent=`0.7787`；ADNI shared=`0.8494`，ADNI independent=`0.8825`。
+- 7×7 Learned CNN：ADNI independent 的 Test AUC 最高，为 `0.8825`；NACC independent 为 `0.7787`，但 BACC 降至 `0.5394`，只预测 2 个阳性。
+- 7×7 NACC shared 的 BACC=`0.6755`、F1=`0.6621`，比 NACC 7×7 independent 的阈值分类表现更平衡。
+- 这些旁注只用于快速定位运行结果；正式解释仍应结合单一 seed/split 的限制。
+
+## 10. 分析
+
+### 10.1 预测同质化明显缓解
 
 A 组仍偏向阴性，test 仅预测 3 个阳性，和原先全阴性 baseline 接近。B 组预测 14 个阳性，C 组预测 10 个阳性，D 组预测 9 个阳性；C 组的预测阳性数与 test 的真实阳性数相同，并且 confusion matrix 显示 TP=6、FN=4，说明模型不再通过单一阴性策略获得表面 accuracy。
 
-### 9.2 Test 综合分类结果以 C 组最好
+### 10.2 Test 综合分类结果以 C 组最好
 
 C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B/D。C 组 test AUC=0.7745，也高于 A 的 0.7426、B 的 0.6617 和 D 的 0.7043。其 test accuracy=0.8596，但结论主要依据 BACC、F1、MCC、AUC 以及 confusion matrix，而非 accuracy 单项。D 组进一步提高正类权重和难例聚焦强度后，test 指标反而低于 C 组，说明在当前固定 split 上继续增强干预并未带来收益。
 
-### 9.3 Validation 与 test 存在排序差异
+### 10.3 Validation 与 test 存在排序差异
 
 按 validation AUC，A（0.8873）高于 B（0.8735）、D（0.8704）和 C（0.8673）；但 test AUC 和阈值分类指标均由 C 组最好。这说明当前单一固定 split 的 validation AUC 对 focal 参数选择不稳定，不能把 validation 排名直接解释为泛化性能排名。C 组虽然 test 最好，但该结论仍应视为单一 seed/split 的结果，而不是稳健统计优势。
 
-### 9.4 对 `NACCMMSE` 的解释
+### 10.4 对 `NACCMMSE` 的解释
 
 本实验不能把性能变化全部归因于移除 `NACCMMSE`，因为同时改变了损失函数。可确认的是：新实验明确排除了该变量，保留了 `CDRSUM` 等临床变量，并且 train-only 标准化避免了验证/测试统计泄漏。若要单独估计 `NACCMMSE` 的因果影响，还需要在相同 BCE/Focal 条件下做成对 ablation。
 
-## 10. 结论与建议
+## 11. 结论与建议
 
 在本次 seed=2026 固定 split 上，推荐将 C 组（`alpha=0.75, gamma=3.0`）作为最终参数选择：它同时减少预测同质化，并取得四组中最高的 test BACC、F1、MCC 和 AUC。D 组作为边界测试未超过 C 组，因此本轮参数选择结束。但不应仅依据该一次实验声称 Focal Loss 已普遍优于 baseline。
 
 后续应优先进行多 seed 重复实验或交叉验证，并报告均值、标准差和每个 seed 的 confusion matrix；同时增加 `NACCMMSE` 保留/移除的正交 ablation，以区分临床特征清理和 Focal Loss 的独立贡献。
 
-## 11. 可复核文件
+## 12. 可复核文件
 
 - A：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha050_gamma10/metrics.json`
 - B：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha065_gamma20/metrics.json`
