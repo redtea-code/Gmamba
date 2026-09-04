@@ -1,0 +1,28 @@
+GPU check: physical=0, memory=4 MiB, utilization=0%
+adni: usable=305 train=193 val=50 test=62 subjects=185
+clinical numeric columns: ['MMSE', 'CDRSB', 'GDTOTAL', 'PTGENDER', 'AGE']
+output: /zjs/cjw/TMI/Gmamba/Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_shared_encoder
+epoch=01/50 train_loss=0.03980 val_acc=0.6200 val_auc=0.8621 val_f1=0.6124 no_improve=0/15 (405.7s)
+epoch=02/50 train_loss=0.02881 val_acc=0.7200 val_auc=0.8637 val_f1=0.7196 no_improve=0/15 (241.3s)
+epoch=03/50 train_loss=0.03027 val_acc=0.7200 val_auc=0.8637 val_f1=0.7200 no_improve=1/15 (239.4s)
+epoch=04/50 train_loss=0.03600 val_acc=0.7200 val_auc=0.8637 val_f1=0.7200 no_improve=2/15 (240.9s)
+epoch=05/50 train_loss=0.03172 val_acc=0.7200 val_auc=0.8637 val_f1=0.7200 no_improve=3/15 (239.9s)
+epoch=06/50 train_loss=0.02124 val_acc=0.6200 val_auc=0.8703 val_f1=0.6073 no_improve=0/15 (241.0s)
+epoch=07/50 train_loss=0.01098 val_acc=0.7400 val_auc=0.8571 val_f1=0.7391 no_improve=1/15 (239.4s)
+epoch=08/50 train_loss=0.00791 val_acc=0.7200 val_auc=0.8194 val_f1=0.7200 no_improve=2/15 (239.9s)
+epoch=09/50 train_loss=0.00432 val_acc=0.6800 val_auc=0.8194 val_f1=0.6667 no_improve=3/15 (240.9s)
+epoch=10/50 train_loss=0.00369 val_acc=0.6800 val_auc=0.8112 val_f1=0.6716 no_improve=4/15 (240.1s)
+epoch=11/50 train_loss=0.00489 val_acc=0.6400 val_auc=0.7882 val_f1=0.6394 no_improve=5/15 (239.3s)
+epoch=12/50 train_loss=0.00517 val_acc=0.7000 val_auc=0.8030 val_f1=0.6999 no_improve=6/15 (239.2s)
+epoch=13/50 train_loss=0.00309 val_acc=0.6800 val_auc=0.8013 val_f1=0.6795 no_improve=7/15 (238.9s)
+epoch=14/50 train_loss=0.00213 val_acc=0.6800 val_auc=0.8095 val_f1=0.6795 no_improve=8/15 (238.5s)
+epoch=15/50 train_loss=0.00266 val_acc=0.7000 val_auc=0.8013 val_f1=0.6999 no_improve=9/15 (239.4s)
+epoch=16/50 train_loss=0.00179 val_acc=0.7000 val_auc=0.7980 val_f1=0.6999 no_improve=10/15 (242.2s)
+epoch=17/50 train_loss=0.00215 val_acc=0.7200 val_auc=0.8210 val_f1=0.7159 no_improve=11/15 (239.7s)
+epoch=18/50 train_loss=0.00303 val_acc=0.7000 val_auc=0.8013 val_f1=0.6989 no_improve=12/15 (241.3s)
+epoch=19/50 train_loss=0.00204 val_acc=0.7000 val_auc=0.8046 val_f1=0.6999 no_improve=13/15 (241.2s)
+epoch=20/50 train_loss=0.00190 val_acc=0.7000 val_auc=0.7849 val_f1=0.6999 no_improve=14/15 (240.9s)
+epoch=21/50 train_loss=0.00233 val_acc=0.7000 val_auc=0.7947 val_f1=0.6999 no_improve=15/15 (239.6s)
+early stopping at epoch 21: validation score did not improve for 15 epochs
+test: {"loss": 0.0389710506682487, "accuracy": 0.7419354838709677, "balanced_accuracy": 0.7777777777777778, "recall_macro": 0.7777777777777778, "precision_macro": 0.8095238095238095, "f1_macro": 0.7394957983193278, "mcc": 0.5864429587908307, "auc": 0.8493589743589743, "n": 62, "class_counts": {"0": 36, "1": 26}, "confusion_matrix": [[20, 16], [0, 26]], "ACC": 0.7419354838709677, "REC": 0.7777777777777778, "PRE": 0.8095238095238095, "AUC": 0.8493589743589743, "F1": 0.7394957983193278}
+checkpoint: Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_shared_encoder/best.pt

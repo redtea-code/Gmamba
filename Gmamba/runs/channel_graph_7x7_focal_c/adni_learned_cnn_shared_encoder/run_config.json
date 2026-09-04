@@ -1,0 +1,149 @@
+{
+  "dataset": "adni",
+  "data_root": "/zjs/AD_Project/ADNI/ADNI_base",
+  "table_path": "/zjs/AD_Project/ADNI/ADNI_table_general.csv",
+  "output_dir": "Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_shared_encoder",
+  "seed": 2026,
+  "image_size": "native_cropped_norm_shape",
+  "spatial_alignment": "learned_cnn",
+  "mri_input_shape": [
+    160,
+    196,
+    160
+  ],
+  "latent_spatial_shape": [
+    40,
+    49,
+    40
+  ],
+  "aligned_spatial_shape": [
+    40,
+    49,
+    40
+  ],
+  "batch_size": 1,
+  "epochs": 50,
+  "early_stopping_patience": 15,
+  "model_selection_metric": "auc",
+  "num_threads": 4,
+  "lr": 6e-05,
+  "weight_decay": 0.0,
+  "focal_loss": {
+    "enabled": true,
+    "alpha": 0.75,
+    "gamma": 3.0
+  },
+  "amp": false,
+  "device": "cuda:0",
+  "model": {
+    "classifier": "ChannelGraphClassifier",
+    "graph_sources": [
+      "mri",
+      "pet_gen",
+      "z_rec",
+      "z_gen_mri",
+      "z_gen_pet"
+    ],
+    "encoder_mode": "shared_encoder",
+    "spatial_alignment": "learned_cnn",
+    "alignment_target_size": [
+      40,
+      49,
+      40
+    ],
+    "node_channels": 64,
+    "pool_size": [
+      2,
+      2,
+      2
+    ],
+    "top_k": 8,
+    "base_width": 8,
+    "categories": [],
+    "num_continuous": 5,
+    "dim": 128,
+    "depth": 2
+  },
+  "ablation": "full",
+  "ablation_description": "MRI + generated PET + clinical",
+  "feature_mode": "mri_pet_latent_concat",
+  "channel_node_pool_size": [
+    2,
+    2,
+    2
+  ],
+  "channel_node_top_k": 8,
+  "image_condition_mode": "mri_generated_pet_and_three_latent_features",
+  "generated_pet_root": "/zjs/AD_Project/ADNI/gen",
+  "reference_mri_to_pet_checkpoint": null,
+  "mri_to_pet_cache_dir": null,
+  "mri_to_pet_native_adapter": null,
+  "runtime_pet_inference": false,
+  "runtime_preprocessing": "none",
+  "data_metadata": {
+    "dataset": "adni",
+    "data_root": "/zjs/AD_Project/ADNI/ADNI_base",
+    "table_path": "/zjs/AD_Project/ADNI/ADNI_table_general.csv",
+    "generated_pet_root": "/zjs/AD_Project/ADNI/gen",
+    "pet_source": "existing_generated_pet",
+    "latent_feature_files": {
+      "z_rec": "MRI_brain_mni152_cropped_norm_image_downsample_latent.nii.gz",
+      "z_gen_mri": "MRI_brain_mni152_cropped_norm_mri_encoder_latent.nii.gz",
+      "z_gen_pet": "MRI_brain_mni152_cropped_norm_pre_pet_decoder_latent.nii.gz"
+    },
+    "latent_feature_channels": {
+      "z_rec": 64,
+      "z_gen_mri": 64,
+      "z_gen_pet": 64
+    },
+    "total_discovered": 305,
+    "skipped": [],
+    "category_sizes": [],
+    "categorical_columns": [],
+    "numeric_columns": [
+      "MMSE",
+      "CDRSB",
+      "GDTOTAL",
+      "PTGENDER",
+      "AGE"
+    ],
+    "num_categories": 0,
+    "num_continuous": 5,
+    "min_scan_date": null,
+    "mri_input_shape": [
+      160,
+      196,
+      160
+    ],
+    "latent_input_shapes": {
+      "z_rec": [
+        40,
+        49,
+        40,
+        64
+      ],
+      "z_gen_mri": [
+        40,
+        49,
+        40,
+        64
+      ],
+      "z_gen_pet": [
+        40,
+        49,
+        40,
+        64
+      ]
+    },
+    "latent_spatial_shape": [
+      40,
+      49,
+      40
+    ],
+    "aligned_spatial_shape": [
+      40,
+      49,
+      40
+    ]
+  }
+}

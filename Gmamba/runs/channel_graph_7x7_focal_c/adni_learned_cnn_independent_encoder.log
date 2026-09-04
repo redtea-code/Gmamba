@@ -1,0 +1,24 @@
+GPU check: physical=0, memory=4 MiB, utilization=0%
+adni: usable=305 train=193 val=50 test=62 subjects=185
+clinical numeric columns: ['MMSE', 'CDRSB', 'GDTOTAL', 'PTGENDER', 'AGE']
+output: /zjs/cjw/TMI/Gmamba/Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_independent_encoder
+epoch=01/50 train_loss=0.04094 val_acc=0.7800 val_auc=0.8834 val_f1=0.7799 no_improve=0/15 (244.5s)
+epoch=02/50 train_loss=0.02954 val_acc=0.7800 val_auc=0.8949 val_f1=0.7799 no_improve=0/15 (241.2s)
+epoch=03/50 train_loss=0.01803 val_acc=0.7600 val_auc=0.8801 val_f1=0.7585 no_improve=1/15 (242.3s)
+epoch=04/50 train_loss=0.01242 val_acc=0.7400 val_auc=0.8818 val_f1=0.7391 no_improve=2/15 (241.2s)
+epoch=05/50 train_loss=0.00622 val_acc=0.7800 val_auc=0.8867 val_f1=0.7640 no_improve=3/15 (240.0s)
+epoch=06/50 train_loss=0.00297 val_acc=0.7600 val_auc=0.8768 val_f1=0.7453 no_improve=4/15 (239.7s)
+epoch=07/50 train_loss=0.00387 val_acc=0.7600 val_auc=0.8506 val_f1=0.7585 no_improve=5/15 (240.5s)
+epoch=08/50 train_loss=0.00331 val_acc=0.8000 val_auc=0.8489 val_f1=0.7947 no_improve=6/15 (240.4s)
+epoch=09/50 train_loss=0.00242 val_acc=0.7600 val_auc=0.8391 val_f1=0.7585 no_improve=7/15 (240.7s)
+epoch=10/50 train_loss=0.00373 val_acc=0.7400 val_auc=0.8342 val_f1=0.7399 no_improve=8/15 (241.1s)
+epoch=11/50 train_loss=0.00314 val_acc=0.8400 val_auc=0.8407 val_f1=0.8358 no_improve=9/15 (241.1s)
+epoch=12/50 train_loss=0.00246 val_acc=0.8000 val_auc=0.8358 val_f1=0.7917 no_improve=10/15 (241.0s)
+epoch=13/50 train_loss=0.00352 val_acc=0.7400 val_auc=0.7964 val_f1=0.7399 no_improve=11/15 (240.0s)
+epoch=14/50 train_loss=0.00275 val_acc=0.7400 val_auc=0.8506 val_f1=0.7143 no_improve=12/15 (240.0s)
+epoch=15/50 train_loss=0.00408 val_acc=0.8000 val_auc=0.8506 val_f1=0.7971 no_improve=13/15 (240.3s)
+epoch=16/50 train_loss=0.00131 val_acc=0.7600 val_auc=0.8112 val_f1=0.7600 no_improve=14/15 (240.3s)
+epoch=17/50 train_loss=0.00223 val_acc=0.7600 val_auc=0.8144 val_f1=0.7585 no_improve=15/15 (239.7s)
+early stopping at epoch 17: validation score did not improve for 15 epochs
+test: {"loss": 0.023608980595224326, "accuracy": 0.8387096774193549, "balanced_accuracy": 0.8557692307692308, "recall_macro": 0.8557692307692308, "precision_macro": 0.8497899159663866, "f1_macro": 0.8385416666666667, "mcc": 0.7055338102010285, "auc": 0.8824786324786325, "n": 62, "class_counts": {"0": 36, "1": 26}, "confusion_matrix": [[27, 9], [1, 25]], "ACC": 0.8387096774193549, "REC": 0.8557692307692308, "PRE": 0.8497899159663866, "AUC": 0.8824786324786325, "F1": 0.8385416666666667}
+checkpoint: Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_independent_encoder/best.pt

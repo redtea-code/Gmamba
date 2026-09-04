@@ -202,31 +202,60 @@ Focal Loss 以 logits 计算，`alpha` 是正类权重，`gamma` 控制易分类
 
 与原始 BCE 结果相比，本次实验隔离了损失函数变化；不过由于 focal-loss 运行保留了原主实验的 5 个 clinical numeric features（包括 `NACCMMSE`），它不能与此前“移除 `NACCMMSE`”的 ResNet/传统基线结果直接构成单因素比较。
 
-## 8. 分析
+## 8. Learned CNN 改为 7×7 卷积的补充实验
 
-### 8.1 预测同质化明显缓解
+为检验 Learned CNN 降采样器的卷积感受野影响，将原有两层 `3×3, stride=2, padding=1` 卷积统一替换为两层 `7×7, stride=2, padding=3` 卷积。每层仍保持 2 倍空间下采样，因此总下采样倍率、输出空间尺寸和后续 graph 结构均不变：
+
+```text
+MRI/PET [B,8,160,196,160]
+  → Conv3d(8→16, 7×7, s=2, p=3) [B,16,80,98,80]
+  → Conv3d(16→8, 7×7, s=2, p=3)  [B,8,40,49,40]
+```
+
+ADNI 和 NACC 各运行 shared/independent encoder 两种配置；统一使用 C 组 Focal Loss（`alpha=0.75, gamma=3.0`）、seed=2026、原固定 split 和原有 clinical 输入。
+
+| 数据集 | 配置 | 最佳 epoch | Val AUC | Test AUC | Test ACC | Test BACC | Test F1 | Test MCC | Test confusion matrix | Test predicted positive |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| ADNI | 7×7 Learned CNN + shared encoder | 6 | 0.8703 | 0.8494 | 0.7419 | 0.7778 | 0.7395 | 0.5864 | `[[20,16],[0,26]]` | 42 |
+| ADNI | 7×7 Learned CNN + independent encoder | 2 | 0.8949 | 0.8825 | 0.8387 | 0.8558 | 0.8385 | 0.7055 | `[[27,9],[1,25]]` | 34 |
+| NACC | 7×7 Learned CNN + shared encoder | 11 | 0.8765 | 0.7404 | 0.7895 | 0.6755 | 0.6621 | 0.3275 | `[[40,7],[5,5]]` | 12 |
+| NACC | 7×7 Learned CNN + independent encoder | 19 | 0.8642 | 0.7787 | 0.8246 | 0.5394 | 0.5343 | 0.1627 | `[[46,1],[9,1]]` | 2 |
+
+### 8.1 结果分析
+
+- ADNI 上，7×7 + independent encoder 表现最好：Test AUC=`0.8825`、BACC=`0.8558`、F1=`0.8385`、MCC=`0.7055`。
+- ADNI 上，7×7 + shared encoder 也取得 Test AUC=`0.8494` 和 MCC=`0.5864`，但预测阳性数较高（42/62），假阳性为 16。
+- NACC 上，7×7 + shared encoder 的 BACC=`0.6755`、F1=`0.6621`，明显优于 7×7 + independent encoder；后者仅预测 2 个阳性，预测同质化重新出现。
+- NACC 两种配置的 Test AUC 分别为 `0.7404` 和 `0.7787`，但独立编码器的阈值分类指标较差，说明排序能力与固定阈值分类表现存在差异。
+- 与原 3×3 Learned CNN 结果相比，7×7 卷积在 ADNI independent encoder 上的 Test AUC 从 `0.8451` 提升到 `0.8825`；NACC independent encoder 的 Test AUC 保持为 `0.7787`，但 BACC 从 `0.6500` 降至 `0.5394`。这表明扩大卷积核可能改善部分数据集上的表征或排序，却不能稳定解决 NACC 的预测同质化问题。
+
+本实验只改变 Learned CNN 的卷积核大小，保留 stride、padding、网络层数、输出通道和其余训练条件；但结果仍来自单一 seed/split，不能据此确认 `7×7` 在总体上优于 `3×3`。
+
+## 9. 分析
+
+### 9.1 预测同质化明显缓解
 
 A 组仍偏向阴性，test 仅预测 3 个阳性，和原先全阴性 baseline 接近。B 组预测 14 个阳性，C 组预测 10 个阳性，D 组预测 9 个阳性；C 组的预测阳性数与 test 的真实阳性数相同，并且 confusion matrix 显示 TP=6、FN=4，说明模型不再通过单一阴性策略获得表面 accuracy。
 
-### 8.2 Test 综合分类结果以 C 组最好
+### 9.2 Test 综合分类结果以 C 组最好
 
 C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B/D。C 组 test AUC=0.7745，也高于 A 的 0.7426、B 的 0.6617 和 D 的 0.7043。其 test accuracy=0.8596，但结论主要依据 BACC、F1、MCC、AUC 以及 confusion matrix，而非 accuracy 单项。D 组进一步提高正类权重和难例聚焦强度后，test 指标反而低于 C 组，说明在当前固定 split 上继续增强干预并未带来收益。
 
-### 8.3 Validation 与 test 存在排序差异
+### 9.3 Validation 与 test 存在排序差异
 
 按 validation AUC，A（0.8873）高于 B（0.8735）、D（0.8704）和 C（0.8673）；但 test AUC 和阈值分类指标均由 C 组最好。这说明当前单一固定 split 的 validation AUC 对 focal 参数选择不稳定，不能把 validation 排名直接解释为泛化性能排名。C 组虽然 test 最好，但该结论仍应视为单一 seed/split 的结果，而不是稳健统计优势。
 
-### 8.4 对 `NACCMMSE` 的解释
+### 9.4 对 `NACCMMSE` 的解释
 
 本实验不能把性能变化全部归因于移除 `NACCMMSE`，因为同时改变了损失函数。可确认的是：新实验明确排除了该变量，保留了 `CDRSUM` 等临床变量，并且 train-only 标准化避免了验证/测试统计泄漏。若要单独估计 `NACCMMSE` 的因果影响，还需要在相同 BCE/Focal 条件下做成对 ablation。
 
-## 9. 结论与建议
+## 10. 结论与建议
 
 在本次 seed=2026 固定 split 上，推荐将 C 组（`alpha=0.75, gamma=3.0`）作为最终参数选择：它同时减少预测同质化，并取得四组中最高的 test BACC、F1、MCC 和 AUC。D 组作为边界测试未超过 C 组，因此本轮参数选择结束。但不应仅依据该一次实验声称 Focal Loss 已普遍优于 baseline。
 
 后续应优先进行多 seed 重复实验或交叉验证，并报告均值、标准差和每个 seed 的 confusion matrix；同时增加 `NACCMMSE` 保留/移除的正交 ablation，以区分临床特征清理和 Focal Loss 的独立贡献。
 
-## 10. 可复核文件
+## 11. 可复核文件
 
 - A：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha050_gamma10/metrics.json`
 - B：`Gmamba/runs/nacc_resnet_focal_seed2026/alpha065_gamma20/metrics.json`
@@ -235,3 +264,4 @@ C 组 test BACC=0.7574、F1=0.7574、MCC=0.5149，均高于 A/B/D。C 组 test A
 - 每组的 `test_predictions.csv` 用于复核预测阳性数量和 confusion matrix。
 - 六个基线复跑结果：`Gmamba/runs/nacc_baseline_focal_seed2026_serial/<model>/metrics.json`
 - 四个 Channel-node 主实验 C 组重测：`Gmamba/runs/channel_graph_nacc_20260903_focal_c/<configuration>/metrics.json`
+- 7×7 Learned CNN 补充实验：`Gmamba/runs/channel_graph_7x7_focal_c/<dataset>_learned_cnn_<encoder>/metrics.json`

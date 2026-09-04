@@ -61,3 +61,14 @@ def test_channel_graph_parser_accepts_c_group_focal_configuration():
     assert args.alpha == 0.75
     assert args.gamma == 3.0
     assert args.focal_loss is True
+
+
+def test_learned_spatial_downsampler_uses_two_7x7_stride2_layers():
+    from graph_construct.channel_graph_learned_edge_model import LearnedSpatialDownsampler
+
+    model = LearnedSpatialDownsampler(8, 16, 8)
+    convolutions = [layer for layer in model.layers if isinstance(layer, torch.nn.Conv3d)]
+    assert len(convolutions) == 2
+    assert all(tuple(layer.kernel_size) == (7, 7, 7) for layer in convolutions)
+    assert all(tuple(layer.stride) == (2, 2, 2) for layer in convolutions)
+    assert all(tuple(layer.padding) == (3, 3, 3) for layer in convolutions)

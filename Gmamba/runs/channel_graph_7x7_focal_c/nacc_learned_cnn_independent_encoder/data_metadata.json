@@ -1,0 +1,66 @@
+{
+  "dataset": "nacc",
+  "data_root": "/zjs/AD_Project/NACC/NACC_base",
+  "table_path": "/zjs/AD_Project/NACC/3year2_general.csv",
+  "generated_pet_root": "/zjs/AD_Project/NACC/gen",
+  "pet_source": "existing_generated_pet",
+  "latent_feature_files": {
+    "z_rec": "MRI_brain_mni152_cropped_norm_image_downsample_latent.nii.gz",
+    "z_gen_mri": "MRI_brain_mni152_cropped_norm_mri_encoder_latent.nii.gz",
+    "z_gen_pet": "MRI_brain_mni152_cropped_norm_pre_pet_decoder_latent.nii.gz"
+  },
+  "latent_feature_channels": {
+    "z_rec": 64,
+    "z_gen_mri": 64,
+    "z_gen_pet": 64
+  },
+  "total_discovered": 276,
+  "skipped": [],
+  "category_sizes": [],
+  "categorical_columns": [],
+  "numeric_columns": [
+    "NACCMMSE",
+    "CDRSUM",
+    "NACCGDS",
+    "SEX",
+    "AGE"
+  ],
+  "num_categories": 0,
+  "num_continuous": 5,
+  "min_scan_date": null,
+  "mri_input_shape": [
+    160,
+    196,
+    160
+  ],
+  "latent_input_shapes": {
+    "z_rec": [
+      40,
+      49,
+      40,
+      64
+    ],
+    "z_gen_mri": [
+      40,
+      49,
+      40,
+      64
+    ],
+    "z_gen_pet": [
+      40,
+      49,
+      40,
+      64
+    ]
+  },
+  "latent_spatial_shape": [
+    40,
+    49,
+    40
+  ],
+  "aligned_spatial_shape": [
+    40,
+    49,
+    40
+  ]
+}

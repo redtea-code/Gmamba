@@ -1,0 +1,7 @@
+{
+  "source": "existing_generated_pet_files",
+  "generated_pet_root": "/zjs/AD_Project/ADNI/gen",
+  "inference_performed": false,
+  "runtime_preprocessing": "none",
+  "file_pattern": "PET_generated.nii.gz"
+}

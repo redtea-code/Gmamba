@@ -1,0 +1,41 @@
+GPU check: physical=0, memory=4 MiB, utilization=0%
+nacc: usable=276 train=174 val=45 test=57 subjects=249
+clinical numeric columns: ['NACCMMSE', 'CDRSUM', 'NACCGDS', 'SEX', 'AGE']
+output: /zjs/cjw/TMI/Gmamba/Gmamba/runs/channel_graph_7x7_focal_c/nacc_learned_cnn_independent_encoder
+epoch=01/50 train_loss=0.03883 val_acc=0.8222 val_auc=0.8302 val_f1=0.5500 no_improve=0/15 (223.0s)
+epoch=02/50 train_loss=0.02865 val_acc=0.8222 val_auc=0.8241 val_f1=0.5500 no_improve=1/15 (221.9s)
+epoch=03/50 train_loss=0.02404 val_acc=0.8222 val_auc=0.8241 val_f1=0.5500 no_improve=2/15 (225.1s)
+epoch=04/50 train_loss=0.02482 val_acc=0.8667 val_auc=0.8302 val_f1=0.7115 no_improve=3/15 (223.8s)
+epoch=05/50 train_loss=0.02210 val_acc=0.8222 val_auc=0.8580 val_f1=0.5500 no_improve=0/15 (222.4s)
+epoch=06/50 train_loss=0.00490 val_acc=0.8000 val_auc=0.8611 val_f1=0.4444 no_improve=0/15 (223.4s)
+epoch=07/50 train_loss=0.00052 val_acc=0.8222 val_auc=0.8549 val_f1=0.5500 no_improve=1/15 (221.8s)
+epoch=08/50 train_loss=0.00014 val_acc=0.8000 val_auc=0.8549 val_f1=0.4444 no_improve=2/15 (222.6s)
+epoch=09/50 train_loss=0.00009 val_acc=0.8000 val_auc=0.8488 val_f1=0.4444 no_improve=3/15 (221.3s)
+epoch=10/50 train_loss=0.00005 val_acc=0.8000 val_auc=0.8519 val_f1=0.4444 no_improve=4/15 (221.1s)
+epoch=11/50 train_loss=0.00006 val_acc=0.8000 val_auc=0.8580 val_f1=0.4444 no_improve=5/15 (220.9s)
+epoch=12/50 train_loss=0.00005 val_acc=0.8000 val_auc=0.8611 val_f1=0.4444 no_improve=6/15 (222.0s)
+epoch=13/50 train_loss=0.00004 val_acc=0.8000 val_auc=0.8519 val_f1=0.4444 no_improve=7/15 (221.2s)
+epoch=14/50 train_loss=0.00005 val_acc=0.8000 val_auc=0.8580 val_f1=0.4444 no_improve=8/15 (221.2s)
+epoch=15/50 train_loss=0.00002 val_acc=0.8000 val_auc=0.8519 val_f1=0.4444 no_improve=9/15 (220.9s)
+epoch=16/50 train_loss=0.00002 val_acc=0.8000 val_auc=0.8611 val_f1=0.4444 no_improve=10/15 (221.1s)
+epoch=17/50 train_loss=0.00002 val_acc=0.8000 val_auc=0.8426 val_f1=0.4444 no_improve=11/15 (221.5s)
+epoch=18/50 train_loss=0.00002 val_acc=0.8000 val_auc=0.8426 val_f1=0.4444 no_improve=12/15 (220.9s)
+epoch=19/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8642 val_f1=0.4444 no_improve=0/15 (221.3s)
+epoch=20/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8549 val_f1=0.4444 no_improve=1/15 (221.0s)
+epoch=21/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8426 val_f1=0.4444 no_improve=2/15 (222.5s)
+epoch=22/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8549 val_f1=0.4444 no_improve=3/15 (221.0s)
+epoch=23/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8457 val_f1=0.4444 no_improve=4/15 (222.1s)
+epoch=24/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8488 val_f1=0.4444 no_improve=5/15 (221.2s)
+epoch=25/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8426 val_f1=0.4444 no_improve=6/15 (222.1s)
+epoch=26/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8519 val_f1=0.4444 no_improve=7/15 (223.6s)
+epoch=27/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8549 val_f1=0.4444 no_improve=8/15 (222.1s)
+epoch=28/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8457 val_f1=0.4444 no_improve=9/15 (221.7s)
+epoch=29/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8549 val_f1=0.4444 no_improve=10/15 (221.6s)
+epoch=30/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8580 val_f1=0.4444 no_improve=11/15 (221.7s)
+epoch=31/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8549 val_f1=0.4444 no_improve=12/15 (222.4s)
+epoch=32/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8519 val_f1=0.4444 no_improve=13/15 (220.9s)
+epoch=33/50 train_loss=0.00001 val_acc=0.8000 val_auc=0.8395 val_f1=0.4444 no_improve=14/15 (220.7s)
+epoch=34/50 train_loss=0.00000 val_acc=0.8000 val_auc=0.8426 val_f1=0.4444 no_improve=15/15 (221.3s)
+early stopping at epoch 34: validation score did not improve for 15 epochs
+test: {"loss": 0.17610811059072157, "accuracy": 0.8245614035087719, "balanced_accuracy": 0.5393617021276595, "recall_macro": 0.5393617021276595, "precision_macro": 0.6681818181818182, "f1_macro": 0.5343137254901961, "mcc": 0.1627258139394107, "auc": 0.7787234042553192, "n": 57, "class_counts": {"0": 47, "1": 10}, "confusion_matrix": [[46, 1], [9, 1]], "ACC": 0.8245614035087719, "REC": 0.5393617021276595, "PRE": 0.6681818181818182, "AUC": 0.7787234042553192, "F1": 0.5343137254901961}
+checkpoint: Gmamba/runs/channel_graph_7x7_focal_c/nacc_learned_cnn_independent_encoder/best.pt

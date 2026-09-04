@@ -1,0 +1,9 @@
+START adni shared_encoder 2026-09-04T02:01:54+00:00
+DONE adni shared_encoder 2026-09-04T03:30:37+00:00
+START adni independent_encoder 2026-09-04T03:30:37+00:00
+DONE adni independent_encoder 2026-09-04T04:40:08+00:00
+START nacc shared_encoder 2026-09-04T04:40:08+00:00
+DONE nacc shared_encoder 2026-09-04T06:21:16+00:00
+START nacc independent_encoder 2026-09-04T06:21:16+00:00
+DONE nacc independent_encoder 2026-09-04T08:28:25+00:00
+ALL_DONE 2026-09-04T08:28:25+00:00

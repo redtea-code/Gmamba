@@ -98,6 +98,17 @@
 | `channel_graph_nacc_20260903_focal_c/learned_cnn_shared_encoder` | nacc | learned_cnn | shared_encoder | 0.75 | 3.0 | 0.9074 | 0.7532 | 0.8596 | 0.6787 | 0.7092 | 0.4430 | 6 | 57 | `Gmamba/runs/channel_graph_nacc_20260903_focal_c/learned_cnn_shared_encoder/metrics.json` |
 | `channel_graph_nacc_20260903_focal_c/learned_cnn_independent_encoder` | nacc | learned_cnn | independent_encoder | 0.75 | 3.0 | 0.8920 | 0.7787 | 0.8772 | 0.6500 | 0.6961 | 0.5110 | 3 | 57 | `Gmamba/runs/channel_graph_nacc_20260903_focal_c/learned_cnn_independent_encoder/metrics.json` |
 
+### Channel-node Learned CNN 7×7 + C 组 Focal Loss
+
+> 将 Learned CNN 两层降采样卷积由 `3×3, stride=2, padding=1` 改为 `7×7, stride=2, padding=3`；总下采样倍率和输出尺寸不变。统一使用 Focal Loss `alpha=0.75, gamma=3.0`、seed=2026，并串行运行于 GPU 0。
+
+| 运行 | 数据集 | kernel | encoder | Val AUC | Test AUC | ACC | BACC | F1 | MCC | Test pred+ | N | 结果文件 |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `channel_graph_7x7_focal_c/adni_learned_cnn_shared_encoder` | adni | 7×7, s=2, p=3 | shared_encoder | 0.8703 | 0.8494 | 0.7419 | 0.7778 | 0.7395 | 0.5864 | 42 | 62 | `Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_shared_encoder/metrics.json` |
+| `channel_graph_7x7_focal_c/adni_learned_cnn_independent_encoder` | adni | 7×7, s=2, p=3 | independent_encoder | 0.8949 | 0.8825 | 0.8387 | 0.8558 | 0.8385 | 0.7055 | 34 | 62 | `Gmamba/runs/channel_graph_7x7_focal_c/adni_learned_cnn_independent_encoder/metrics.json` |
+| `channel_graph_7x7_focal_c/nacc_learned_cnn_shared_encoder` | nacc | 7×7, s=2, p=3 | shared_encoder | 0.8765 | 0.7404 | 0.7895 | 0.6755 | 0.6621 | 0.3275 | 12 | 57 | `Gmamba/runs/channel_graph_7x7_focal_c/nacc_learned_cnn_shared_encoder/metrics.json` |
+| `channel_graph_7x7_focal_c/nacc_learned_cnn_independent_encoder` | nacc | 7×7, s=2, p=3 | independent_encoder | 0.8642 | 0.7787 | 0.8246 | 0.5394 | 0.5343 | 0.1627 | 2 | 57 | `Gmamba/runs/channel_graph_7x7_focal_c/nacc_learned_cnn_independent_encoder/metrics.json` |
+
 ### 其他分类实验
 
 | 运行 | 数据集 | 模型/特征模式 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
