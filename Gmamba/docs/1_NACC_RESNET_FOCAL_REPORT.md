@@ -163,7 +163,30 @@ classifier logits                  [B,1]
 
 Focal Loss 以 logits 计算，`alpha` 是正类权重，`gamma` 控制易分类样本的抑制。最佳 checkpoint 依据 validation AUC 选择；test 集未用于参数选择。
 
-## 5. 结果
+## 5. 结果（按数据集整合）
+
+为便于比较，先按数据集汇总本报告涉及的 ADNI 与 NACC 结果；后续各节仍保留实验方法和原有分析文字。指标列统一为 Test AUC、ACC、BACC、F1、MCC；`pred+` 表示测试集预测为阳性的样本数。
+
+### 5.1 ADNI 实验结果
+
+| 实验 | 配置 | Test AUC | ACC | BACC | F1 | MCC | pred+ | N |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| 7×7 Learned CNN | shared encoder | 0.8494 | 0.7419 | 0.7778 | 0.7395 | 0.5864 | 42 | 62 |
+| 7×7 Learned CNN | independent encoder | 0.8825 | 0.8387 | 0.8558 | 0.8385 | 0.7055 | 34 | 62 |
+
+### 5.2 NACC 实验结果
+
+| 实验 | 配置 | Test AUC | ACC | BACC | F1 | MCC | pred+ | N |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| ResNet + focal | A (`α=0.50, γ=1.0`) | 0.7426 | 0.8070 | 0.5287 | 0.5225 | 0.0978 | 3 | 57 |
+| ResNet + focal | B (`α=0.65, γ=2.0`) | 0.6617 | 0.7544 | 0.6543 | 0.6306 | 0.2726 | 14 | 57 |
+| ResNet + focal | C (`α=0.75, γ=3.0`) | 0.7745 | 0.8596 | 0.7574 | 0.7574 | 0.5149 | 10 | 57 |
+| ResNet + focal | D (`α=0.85, γ=4.0`) | 0.7043 | 0.8070 | 0.6468 | 0.6526 | 0.3063 | 9 | 57 |
+| 六个基线 + focal | CNN / GCN / SGCN / IBGNN / MADFormer / ITCFN | 0.6191–0.8234 | — | 0.6500–0.7074 | 0.6621–0.7158 | 0.3275–0.5110 | 3–12 | 57 |
+| Channel-node + focal | AdaptiveAvgPool / Learned CNN × shared / independent | 0.7000–0.7787 | 0.8246–0.8772 | 0.5000–0.6787 | 0.4519–0.7092 | 0.0000–0.5110 | 0–6 | 57 |
+| 7×7 Learned CNN + focal | shared / independent | 0.7404 / 0.7787 | 0.7895 / 0.8246 | 0.6755 / 0.5394 | 0.6621 / 0.5343 | 0.3275 / 0.1627 | 12 / 2 | 57 |
+
+## 5.3 NACC ResNet + Focal Loss 详细结果
 
 | 组别 | 最佳 epoch | Val AUC | Test AUC | Test ACC | Test BACC | Test F1 | Test MCC | Test confusion matrix | Test predicted positive |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---:|

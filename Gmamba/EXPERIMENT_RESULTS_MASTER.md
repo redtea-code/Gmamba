@@ -15,7 +15,9 @@
 
 ## 2. 已有分类结果
 
-### Graph-Mamba 主线
+## 2.1 ADNI 实验结果
+
+### ADNI：Graph-Mamba 主线
 
 | 运行 | 数据集 | 模型/特征模式 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
@@ -35,7 +37,7 @@
 | `adni_graphconstruct_mri_pet_patch2_extra_cnn_fp32_20260831` | adni | MriPetPatchGraphClassifier | full | 0.8785 | 0.8162 | 0.7097 | 0.7073 | 0.6923 | 0.6429 | 0.7048 | 0.4110 | 62.0000 | `Gmamba/runs/adni_graphconstruct_mri_pet_patch2_extra_cnn_fp32_20260831/metrics.json` |
 | `adni_graphconstruct_mri_pet_patch2_fp32_20260831` | adni | MriPetPatchGraphClassifier | full | 0.8752 | 0.7756 | 0.6935 | 0.6934 | 0.6923 | 0.6207 | 0.6896 | 0.3825 | 62.0000 | `Gmamba/runs/adni_graphconstruct_mri_pet_patch2_fp32_20260831/metrics.json` |
 
-### Channel-node learned-edge 新模型（空间尺度已对齐）
+### ADNI：Channel-node learned-edge 模型（空间尺度已对齐）
 
 > 已完成。ADNI 四个配置均使用 seed=2026；MRI/PET `(160,196,160)` 已对齐到 latent `(40,49,40)` 后进入 encoder。NACC 的对应实验结果已移至下方 C 组 Focal Loss 主实验小节。
 
@@ -46,12 +48,7 @@
 | `channel_graph_adni_20260902_alignment/learned_cnn_independent_encoder` | adni | learned_cnn | independent_encoder | `(160, 196, 160)` | `(40, 49, 40)` | 0.8785 | 0.8451 | 0.6935 | 0.6506 | 0.6446 | 0.3652 | 62 | `Gmamba/runs/channel_graph_adni_20260902_alignment/learned_cnn_independent_encoder/metrics.json` |
 | `channel_graph_adni_20260902_alignment/learned_cnn_shared_encoder` | adni | learned_cnn | shared_encoder | `(160, 196, 160)` | `(40, 49, 40)` | 0.8768 | 0.7810 | 0.6129 | 0.5491 | 0.4946 | 0.1641 | 62 | `Gmamba/runs/channel_graph_adni_20260902_alignment/learned_cnn_shared_encoder/metrics.json` |
 
-### 消融实验
-
-| 运行 | 数据集 | 模型/特征模式 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
-|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-
-### 基线比较
+### ADNI：基线比较
 
 | 运行 | 数据集 | 模型/特征模式 | 模态 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
@@ -63,7 +60,19 @@
 | `adni_mad_former_baseline_repro_20260831` | adni | mad_former | MRI + generated PET + clinical | — | 0.8424 | 0.8900 | 0.7419 | 0.7083 | 0.7083 | 0.7649 | 0.7120 | 0.4699 | 62 | `Gmamba/runs/baseline_repro_adni_20260831/mad_former/metrics.json` |
 | `adni_itcfn_baseline_repro_20260831` | adni | itcfn | MRI + generated PET + clinical | — | 0.8834 | 0.7671 | 0.5806 | 0.5000 | 0.5000 | 0.2903 | 0.3673 | 0.0000 | 62 | `Gmamba/runs/baseline_repro_adni_20260831/itcfn/metrics.json` |
 
-### NACC ResNet + Focal Loss（移除 NACCMMSE）
+### ADNI：其他分类实验
+
+| 运行 | 数据集 | 模型/特征模式 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `adni_resnet50_mri_pet_fp32_20260831_retry` | adni | resnet50 | — | 0.9212 | 0.8494 | 0.7742 | 0.7628 | 0.6923 | 0.7500 | 0.7654 | 0.5325 | 62.0000 | `Gmamba/runs/adni_resnet50_mri_pet_fp32_20260831_retry/metrics.json` |
+| `adni_binary_mri2pet_native` | adni | — | — | 0.9072 | 0.7831 | 0.7258 | 0.7158 | 0.6538 | 0.6800 | 0.7169 | 0.4342 | 62.0000 | `Gmamba/runs/adni_binary_mri2pet_native/metrics.json` |
+| `adni_binary_mri2pet_retrained_native` | adni | — | — | 0.8949 | 0.7981 | 0.7258 | 0.7212 | 0.6923 | 0.6667 | 0.7199 | 0.4402 | 62.0000 | `Gmamba/runs/adni_binary_mri2pet_retrained_native/metrics.json` |
+| `adni_binary_native` | adni | — | — | 0.8998 | 0.8248 | 0.6129 | 0.5545 | 0.1923 | 0.6250 | 0.5137 | 0.1604 | 62.0000 | `Gmamba/runs/adni_binary_native/metrics.json` |
+
+
+## 2.2 NACC 实验结果
+
+### NACC：ResNet + Focal Loss（移除 NACCMMSE）
 
 > seed=2026；固定 subject-level split：train/val/test=174/45/57（test 为 47 negative / 10 positive）。输入为 MRI + generated PET + `CDRSUM`、`NACCGDS`、`SEX`、`AGE`；`NACCMMSE` 已排除。四组只改变 focal loss 参数；最佳 epoch 按 validation AUC 选择，test 仅评估一次。
 
@@ -74,7 +83,7 @@
 | `nacc_resnet_focal_seed2026/alpha075_gamma30` | nacc | ResNet + focal | 0.75 | 3.0 | 0.8673 | 0.7745 | 0.8596 | 0.7574 | 0.7574 | 0.5149 | 10 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha075_gamma30/metrics.json` |
 | `nacc_resnet_focal_seed2026/alpha085_gamma40` | nacc | ResNet + focal | 0.85 | 4.0 | 0.8704 | 0.7043 | 0.8070 | 0.6468 | 0.6526 | 0.3063 | 9 | 57 | `Gmamba/runs/nacc_resnet_focal_seed2026/alpha085_gamma40/metrics.json` |
 
-### NACC 基线 + C 组 Focal Loss（移除 NACCMMSE）
+### NACC：基线 + C 组 Focal Loss（移除 NACCMMSE）
 
 > seed=2026；固定 subject-level split；六个非 ResNet 基线串行运行于 GPU 0。统一使用 Focal Loss `alpha=0.75, gamma=3.0`，最佳 epoch 按 validation AUC 选择，test 仅评估一次。
 
@@ -87,7 +96,7 @@
 | `nacc_baseline_focal_seed2026_serial/mad_former` | nacc | mad_former + focal | 0.75 | 3.0 | 0.8549 | 0.8234 | 0.8772 | 0.6500 | 0.6961 | 0.5110 | 3 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/mad_former/metrics.json` |
 | `nacc_baseline_focal_seed2026_serial/itcfn` | nacc | itcfn + focal | 0.75 | 3.0 | 0.8395 | 0.7957 | 0.8421 | 0.6681 | 0.6889 | 0.3896 | 7 | 57 | `Gmamba/runs/nacc_baseline_focal_seed2026_serial/itcfn/metrics.json` |
 
-### NACC Channel-node 主实验 + C 组 Focal Loss
+### NACC：Channel-node 主实验 + C 组 Focal Loss
 
 > seed=2026；四个空间尺度对齐主实验保持原有模型、latent、clinical 输入和固定 split，仅将 BCE 替换为 Focal Loss `alpha=0.75, gamma=3.0`。四组串行运行于 GPU 0；原始 BCE 结果保留在上一节。
 
@@ -98,7 +107,8 @@
 | `channel_graph_nacc_20260903_focal_c/learned_cnn_shared_encoder` | nacc | learned_cnn | shared_encoder | 0.75 | 3.0 | 0.9074 | 0.7532 | 0.8596 | 0.6787 | 0.7092 | 0.4430 | 6 | 57 | `Gmamba/runs/channel_graph_nacc_20260903_focal_c/learned_cnn_shared_encoder/metrics.json` |
 | `channel_graph_nacc_20260903_focal_c/learned_cnn_independent_encoder` | nacc | learned_cnn | independent_encoder | 0.75 | 3.0 | 0.8920 | 0.7787 | 0.8772 | 0.6500 | 0.6961 | 0.5110 | 3 | 57 | `Gmamba/runs/channel_graph_nacc_20260903_focal_c/learned_cnn_independent_encoder/metrics.json` |
 
-### Channel-node Learned CNN 7×7 + C 组 Focal Loss
+
+### ADNI/NACC：Channel-node Learned CNN 7×7 + C 组 Focal Loss
 
 > 将 Learned CNN 两层降采样卷积由 `3×3, stride=2, padding=1` 改为 `7×7, stride=2, padding=3`；总下采样倍率和输出尺寸不变。统一使用 Focal Loss `alpha=0.75, gamma=3.0`、seed=2026，并串行运行于 GPU 0。
 
@@ -109,14 +119,15 @@
 | `channel_graph_7x7_focal_c/nacc_learned_cnn_shared_encoder` | nacc | 7×7, s=2, p=3 | shared_encoder | 0.8765 | 0.7404 | 0.7895 | 0.6755 | 0.6621 | 0.3275 | 12 | 57 | `Gmamba/runs/channel_graph_7x7_focal_c/nacc_learned_cnn_shared_encoder/metrics.json` |
 | `channel_graph_7x7_focal_c/nacc_learned_cnn_independent_encoder` | nacc | 7×7, s=2, p=3 | independent_encoder | 0.8642 | 0.7787 | 0.8246 | 0.5394 | 0.5343 | 0.1627 | 2 | 57 | `Gmamba/runs/channel_graph_7x7_focal_c/nacc_learned_cnn_independent_encoder/metrics.json` |
 
-### 其他分类实验
+
+
+## 2.3 其他/跨数据集结果
+
+### 其他：消融实验（当前无已完成结果）
 
 | 运行 | 数据集 | 模型/特征模式 | 消融 | Val AUC | Test AUC | ACC | BACC | Recall | PRE | F1 | MCC | N | 结果文件 |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| `adni_resnet50_mri_pet_fp32_20260831_retry` | adni | resnet50 | — | 0.9212 | 0.8494 | 0.7742 | 0.7628 | 0.6923 | 0.7500 | 0.7654 | 0.5325 | 62.0000 | `Gmamba/runs/adni_resnet50_mri_pet_fp32_20260831_retry/metrics.json` |
-| `adni_binary_mri2pet_native` | adni | — | — | 0.9072 | 0.7831 | 0.7258 | 0.7158 | 0.6538 | 0.6800 | 0.7169 | 0.4342 | 62.0000 | `Gmamba/runs/adni_binary_mri2pet_native/metrics.json` |
-| `adni_binary_mri2pet_retrained_native` | adni | — | — | 0.8949 | 0.7981 | 0.7258 | 0.7212 | 0.6923 | 0.6667 | 0.7199 | 0.4402 | 62.0000 | `Gmamba/runs/adni_binary_mri2pet_retrained_native/metrics.json` |
-| `adni_binary_native` | adni | — | — | 0.8998 | 0.8248 | 0.6129 | 0.5545 | 0.1923 | 0.6250 | 0.5137 | 0.1604 | 62.0000 | `Gmamba/runs/adni_binary_native/metrics.json` |
+
 
 ## 3. 待补充或未完成运行
 
