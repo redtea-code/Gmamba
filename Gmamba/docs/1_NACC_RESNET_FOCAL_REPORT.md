@@ -1,11 +1,11 @@
 # 报告 1：NACC ResNet + Focal Loss 实验报告
 
-**报告索引：** 1  
+**报告索引：** 1
 
-**日期：** 2026-09-03  
-**数据集：** NACC  
-**Seed：** 2026  
-**模型：** 本地 3D ResNet-18，MRI + generated PET + clinical features  
+**日期：** 2026-09-03
+**数据集：** NACC
+**Seed：** 2026
+**模型：** 本地 3D ResNet-18，MRI + generated PET + clinical features
 **结果来源：** `Gmamba/runs/nacc_resnet_focal_seed2026/`
 
 ## 1. 实验目的
